@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:technorio/utils/url.dart';
 
 class EntryPage extends StatefulWidget {
   const EntryPage({super.key});
@@ -17,20 +18,22 @@ class _EntryPageState extends State<EntryPage> {
     final TextEditingController passwordController = TextEditingController();
 
     void saveData() async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      final url = urlController.text;
-      final eventCode = eventCodeController.text;
-      final password = passwordController.text;
+  final url = urlController.text;
+  final eventCode = eventCodeController.text;
+  final password = passwordController.text;
 
-      // Save data to SharedPreferences
-      await prefs.setString('url', url);
-      await prefs.setString('eventCode', eventCode);
-      await prefs.setString('password', password);
+  // Save data to SharedPreferences
+  await prefs.setString('url', url);
+  await prefs.setString('eventCode', eventCode);
+  await prefs.setString('password', password);
 
-      // Navigate to another screen
-      Navigator.pushNamed(context, '/stallScreen');
-    }
+
+  // Navigate to another screen
+  Navigator.pushNamed(context, '/stallScreen');
+}
+
 
     return SingleChildScrollView(
       child: Container(

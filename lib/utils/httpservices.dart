@@ -7,16 +7,17 @@ class HttpServices {
   HttpServices.internal();
 
   Dio? _dio;
-  Dio getDioInstance() {
+
+  Future<Dio> getDioInstance() async {
     if (_dio == null) {
-      return _dio = Dio(
+      final baseUrl = await APIUrls.getBaseUrl(); // Await the base URL
+      _dio = Dio(
         BaseOptions(
           baseUrl: baseUrl,
           connectTimeout: const Duration(seconds: 5),
         ),
       );
-    } else {
-      return _dio!;
     }
+    return _dio!;
   }
 }

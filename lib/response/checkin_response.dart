@@ -1,3 +1,10 @@
+
+import 'package:json_annotation/json_annotation.dart';
+
+
+part 'checkin_response.g.dart';
+
+@JsonSerializable()
 class CheckinResponse {
   final String message;
   final String type;
@@ -6,19 +13,13 @@ class CheckinResponse {
   CheckinResponse({
     required this.message,
     required this.type,
-    required this.data,
+    required this.data
+
+
   });
 
-  factory CheckinResponse.fromJson(Map<String, dynamic> json) {
-    return CheckinResponse(
-      message: json['message'],
-      type: json['type'],
-      data: List<String>.from(json['data']),
-    );
-  }
+  factory CheckinResponse.fromJson(Map<String, dynamic> json) =>
+      _$CheckinResponseFromJson(json);
 
-  @override
-  String toString() {
-    return 'CheckinResponse{ message: $message, type: $type, data: $data }';
-  }
+  Map<String, dynamic> toJson() => _$CheckinResponseToJson(this);
 }
