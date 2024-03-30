@@ -11,30 +11,39 @@ class EntryPage extends StatefulWidget {
 }
 
 class _EntryPageState extends State<EntryPage> {
+  final TextEditingController urlController = TextEditingController();
+  final TextEditingController eventCodeController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    urlController.dispose();
+    eventCodeController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void saveAndNavigate() async {
+    // Navigate to another screen
+    saveDataToSharedPreference();
+    Navigator.pushNamed(context, '/stallScreen');
+  }
+
+  saveDataToSharedPreference() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final url = urlController.text;
+    final eventCode = eventCodeController.text;
+    final password = passwordController.text;
+
+    // Save data to SharedPreferences
+    prefs.setString('url', url);
+    prefs.setString('eventCode', eventCode);
+    prefs.setString('password', password);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController urlController = TextEditingController();
-    final TextEditingController eventCodeController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-
-    void saveData() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  final url = urlController.text;
-  final eventCode = eventCodeController.text;
-  final password = passwordController.text;
-
-  // Save data to SharedPreferences
-  await prefs.setString('url', url);
-  await prefs.setString('eventCode', eventCode);
-  await prefs.setString('password', password);
-
-
-  // Navigate to another screen
-  Navigator.pushNamed(context, '/stallScreen');
-}
-
-
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
@@ -182,7 +191,7 @@ class _EntryPageState extends State<EntryPage> {
                     FadeInUp(
                       duration: const Duration(milliseconds: 1600),
                       child: MaterialButton(
-                        onPressed: saveData,
+                        onPressed: saveAndNavigate,
                         height: 50,
                         color: const Color.fromARGB(255, 120, 205, 183),
                         shape: RoundedRectangleBorder(

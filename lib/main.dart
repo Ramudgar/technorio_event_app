@@ -17,7 +17,7 @@ void main() async {
     initialRoute: '/',
     routes: {
       '/': (context) => const HomePage(), // Use HomePage widget here
-      '/stallScreen': (context) => StallScreen(),
+      '/stallScreen': (context) => const StallScreen(),
       '/qrScannerPage': (context) => const QRScannerPage(),
     },
   ));

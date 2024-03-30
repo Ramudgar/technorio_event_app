@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:technorio/controllers/check_screen_controller.dart';
+import 'package:technorio/model/checkin.dart';
 
-class StallScreen extends StatelessWidget {
-  // Define event titles and corresponding stalls
-  final List<String> eventTitles = ['Normal', 'Complex', 'Diamond'];
+class StallScreen extends StatefulWidget {
+  const StallScreen({super.key});
 
-  final List<List<String>> stalls = [
-    ['Stall 1', 'Stall 2', 'Stall 3'],
-    ['Stall 4', 'Stall 5', 'Stall 6'],
-    ['Stall 7', 'Stall 8', 'Stall 9'],
-  ];
+  @override
+  State<StallScreen> createState() => _StallScreenState();
+}
 
-  StallScreen({super.key});
+class _StallScreenState extends State<StallScreen> {
+  List<Checkin> stallsList = [];
+  late final CheckInController _checkInController;
+
+  @override
+  void initState() {
+    _checkInController = CheckInController();
+    fetchStalls();
+    super.initState();
+  }
+
+  fetchStalls() async {
+    stallsList = await _checkInController.fetchStalls();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +47,14 @@ class StallScreen extends StatelessWidget {
           ),
         ),
         child: ListView.builder(
-          itemCount: eventTitles.length,
+          itemCount: stallsList.length,
           itemBuilder: (context, index) {
             return _buildExpansionTile(
-                context, eventTitles[index], stalls[index]);
+              context,
+              stallsList[index].type,
+              stallsList[index].stall,
+              stallsList[index].type,
+            );
           },
         ),
       ),
@@ -46,20 +63,19 @@ class StallScreen extends StatelessWidget {
 
 // Function to build ExpansionTile for each event
   Widget _buildExpansionTile(
-      BuildContext context, title, List<String> stallList) {
+      BuildContext context, title, List<int> stallList, String type) {
     return ExpansionTile(
       title: Text(
         title,
         style: const TextStyle(color: Colors.white, fontSize: 24),
       ),
       children:
-          stallList.map((stall) => _buildStall(context, stall, title)).toList(),
+          stallList.map((stall) => _buildStall(context, stall, type)).toList(),
     );
   }
 
 // Function to build each stall
-  Widget _buildStall(
-      BuildContext context, String stallName, String eventTitle) {
+  Widget _buildStall(BuildContext context, int stallName, String eventTitle) {
     return GestureDetector(
       onTap: () {
         // Navigate to QRScannerPage when a stall is tapped
@@ -77,7 +93,7 @@ class StallScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          stallName,
+          stallName.toString(),
           style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
       ),

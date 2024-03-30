@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:technorio/controllers/check_screen_controller.dart';
 
 class QRScannerPage extends StatefulWidget {
   const QRScannerPage({super.key});
@@ -11,7 +12,14 @@ class QRScannerPage extends StatefulWidget {
 class _QRScannerPageState extends State<QRScannerPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController controller;
+  late final CheckInController _checkInController;
   String scannedData = '';
+
+  @override
+  void initState() {
+    _checkInController = CheckInController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +28,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     // Extract stallName and eventTitle from the arguments
-    final String stallName = args?['stallName'];
+    final int stallName = args?['stallName'];
     final String eventTitle = args?['eventTitle'];
 
     return Scaffold(
@@ -33,7 +41,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
             flex: 5,
             child: QRView(
               key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+              onQRViewCreated: (controller) => _onQRViewCreated(
+                controller,
+                stallNumber: stallName,
+                type: eventTitle,
+              ),
             ),
           ),
           Expanded(
@@ -50,11 +62,19 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  void _onQRViewCreated(QRViewController controller,
+      {required int stallNumber, required String type}) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         scannedData = scanData.code!;
+        if (scannedData.isNotEmpty) {
+          _checkInController.stallPost(
+            cardId: scannedData,
+            stallNumber: stallNumber,
+            type: type,
+          );
+        }
       });
     });
   }
